@@ -61,4 +61,7 @@ Por ejemplo, si Frodo come una merienda, pasa a llamarse “ErrrpFrodo” y pasa
 
 desayuno hobbit = hobbit{salud = salud hobbit + 5, nombre = "Errrp" ++ nombre hobbit}
 
-segundoDesayuno hobbit manzanas = fuerza hobbit + (manzanas *4)
+--segundoDesayuno manzanas hobbit= hobbit{fuerza=fuerza hobbit + (manzanas *4)}
+segundoDesayuno manzanas hobbit= fuerza hobbit + (manzanas *4)
+
+merienda hobbit = ((segundoDesayuno 2).desayuno) hobbit
