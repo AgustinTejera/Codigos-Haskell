@@ -1,0 +1,64 @@
+data Anillo = UnAnillo{
+nombreAnillo::String,
+peso::Int,
+frase::String}
+ deriving Show
+
+data Hobbit = UnHobbit{
+nombre::String,
+estatura::Int,
+salud::Int,
+fuerza::Int,
+esDeComarca::Bool,
+anillo::Anillo}
+ deriving Show
+ 
+--HOBBITS:
+frodo = UnHobbit "Frodo" 106 10 50 True anilloUnico
+sam = UnHobbit "Sam" 40 100 90 False anilloPro
+
+--ANILLOS:
+anilloUnico = UnAnillo "AnilloUnico" 12 "Un Anillo para gobernarlos a todos. Un Anillo para encontrarlos, un Anillo para atraerlos a todos y atarlos en las tinieblas."
+anilloPro = UnAnillo "AnilloPro" 23 "Un Anillo supremo que te hace ganar ante cualquier combate"
+anilloMagico = UnAnillo "AnilloMagico" 1 "Nadie conoce los secretos de este anillo, solo los magos mas poderosos"
+
+poderAnillo::Anillo->Int
+poderAnillo anillo = peso anillo * length (frase anillo)
+
+--resistencia hobbit
+-- |esDeComarca hobbit = absoluto ((estatura hobbit * salud hobbit) + fuerza hobbit + empiezaConLetra hobbit 'F' - poderAnillo (anillo hobbit))
+-- |otherwise = absoluto ((salud hobbit * fuerza hobbit) + empiezaConLetra hobbit 'F' - poderAnillo (anillo hobbit))
+
+resistencia hobbit
+ |esDeComarca hobbit = absoluto (((*estatura hobbit).salud) hobbit + ((+fuerza hobbit).(empiezaConLetra 'F')) hobbit - poderAnillo (anillo hobbit))
+ |otherwise = absoluto(((*salud hobbit).(fuerza)) hobbit + (empiezaConLetra 'F') hobbit - poderAnillo (anillo hobbit))
+
+
+empiezaConLetra::Char->Hobbit->Int
+empiezaConLetra letra hobbit 
+ |((==letra).((head).(nombre))) hobbit = 10
+ |otherwise = 0
+
+--empiezaConLetra::Hobbit->Char->Int
+--empiezaConLetra hobbit letra
+-- |head (nombre hobbit) == letra = 10
+-- |otherwise = 0
+
+absoluto numero
+ |numero>0 = numero
+ |otherwise = 0
+ 
+
+cambiarAnillo::Hobbit->Anillo->Hobbit
+cambiarAnillo hobbit anilloNuevo = hobbit{anillo=anilloNuevo}
+
+{-Implementar las siguientes comidas que cualquier hobbit puede comer:
+Desayuno: Se le suma la 5 a la salud y se agrega “Errrp” al principio del nombre.
+Segundo desayuno: Consta de una cantidad de manzanas que les da Aragorn en el viaje, cada manzana aumenta la fuerza en 4.
+Merienda. Es como un desayuno seguido de un segundo desayuno de 2 manzanas.
+Por ejemplo, si Frodo come una merienda, pasa a llamarse “ErrrpFrodo” y pasa a tener 58 de fuerza y 15 de salud)
+-}
+
+desayuno hobbit = hobbit{salud = salud hobbit + 5, nombre = "Errrp" ++ nombre hobbit}
+
+segundoDesayuno hobbit manzanas = fuerza hobbit + (manzanas *4)
