@@ -152,3 +152,18 @@ agregarIngredientes::Fruta->Fruta->[Fruta]
 agregarIngredientes ingrediente1 ingrediente2 = Data.List.sort ([ingrediente1] ++ [ingrediente2])
 
 
+{- 
+  choripasteadora: integrante 2
+Es una máquina especial que le agrega " de la casa" al gusto del helado y también le incorpora
+ los ingredientes “agua” y “esencia artificial”, siempre y cuando no lo tengan. 
+ 
+ -}
+ 
+choripasteadora::Helado->Helado
+choripasteadora helado = helado {gusto = gusto helado ++ " de la casa", ingredientes= sinRepetidos (ingredientes helado ++ agregarIngredientes ("agua") ("esencia artificial"))}
+
+
+
+
+
+
