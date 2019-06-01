@@ -40,7 +40,7 @@ estaBienPreparado helado
  |otherwise = False
 
 
-empiezaCon gusto = Data.List.isPrefixOf (take 9 gusto) gustoChocolate   
+empiezaCon gusto = Data.List.isPrefixOf gustoChocolate gusto  
 
 temperaturaCorrecta temperatura cantidad = temperatura <= cantidad
 
