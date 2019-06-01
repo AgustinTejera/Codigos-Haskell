@@ -90,3 +90,65 @@ agregadora1 helado ingrediente=  helado {ingredientes=foldr (:) [ingrediente] (i
 
 
 
+{-
+
+2.2.3 c. mixturadora: integrante 1
+Toma dos helados de frutas diferentes y obtiene uno nuevo, de gusto combinado concatenando " y " entre los gustos, 
+con la menor temperatura y todos los ingredientes (sin repetidos).
+
+Resolver la función que elimina repetidos en forma recursiva y llamarla sinRepetidos. Ésta es la única función que 
+puede definirse recursivamente.
+-}
+
+
+
+limon = Helado "limon" (-2) ["agua","limon","azucar"]
+naranja = Helado "naranja" (-22) ["naranja", "jugo", "mango", "agua", "azucar"]
+
+--mixturadora helado1 helado2 = 
+
+
+
+--limon y naranja  = Helado "limon y naranja" (-22) ["agua","limon","azucar","naranja", "jugo", "mango"]
+
+{-sinRepetidos [] _= []
+sinRepetidos (x:xs) lista2
+ | not (elem x lista2) = x : sinRepetidos xs lista2
+ |otherwise = sinRepetidos xs lista2
+-}
+
+sinRepetidos [] = []
+sinRepetidos (x:xs)
+ | x /= head xs  = x : sinRepetidos xs
+ |otherwise = sinRepetidos xs 
+ 
+ 
+juntarListas lista1 lista2 = Data.List.sort (lista1 ++ lista2)
+
+
+
+--["agua","agua","azucar","azucar","jugo","limon","mango","naranja"]
+
+--"naranja" /= "[]"    ["agua","azucar","jugo","limon","mango","naranja" 
+
+
+{-estaBienPreparado::Helado->Bool
+estaBienPreparado helado
+  |take 9 (gusto helado) == "chocolate" && (temperatura helado <= (-10)) = True
+  |take 4 (gusto helado) == "agua" && temperatura helado <= (-5) 
+  |otherwise = False --temperatura helado <= cantidadIngredientes helado
+
+empiezaCon::String->Bool 
+empiezaCon "chocolate" = take 9 (gusto helado) == "chocolate" && (temperatura helado <= (-10))    
+empiezaCon "agua" = take 4 (gusto helado) == "agua" && temperatura helado <= (-5)
+empiezaCon _ = temperatura helado <= cantidadIngredientes helado
+ 
+ 
+cantidadIngredientes::Helado->Int 
+cantidadIngredientes = length.ingredientes 
+
+cool helado= Data.List.isPrefixOf gustoChocolate (take 9 (gusto helado)) 
+ --- |Data.List.isPrefixOf gustoAgua (take 9 (gusto helado))
+-}
+
+
