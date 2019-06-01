@@ -4,6 +4,7 @@ import Data.List (isPrefixOf,sort)
 
 type Ingrediente = String
 type Fruta = String
+type Maquina = Helado->Helado
 
 data Helado = Helado {
    gusto :: String,
@@ -83,14 +84,14 @@ Permite agregar un ingrediente a un helado al final de la lista.
 
 ------------------------------MAQUINAS------------------
 
-heladeraComun::Int->Helado->Helado
+heladeraComun::Int->Maquina
 heladeraComun grados helado = helado{temperatura= temperatura helado - grados} 
 
-agregadora::Helado->Ingrediente->Helado
-agregadora helado ingrediente = helado {ingredientes= ingredientes helado ++ [ingrediente] }
+agregadora::Ingrediente->Maquina
+agregadora ingrediente helado= helado {ingredientes= ingredientes helado ++ [ingrediente] }
 
-agregadora1::Helado->Ingrediente->Helado
-agregadora1 helado ingrediente = helado {ingredientes=foldr (:) [ingrediente] (ingredientes helado) }
+agregadora1::Ingrediente->Maquina
+agregadora1 ingrediente helado= helado {ingredientes=foldr (:) [ingrediente] (ingredientes helado) }
 
 --type Caracter = Char    'a'
 --type Palabra = [Caracter]  "belen"
@@ -106,7 +107,7 @@ Resolver la función que elimina repetidos en forma recursiva y llamarla sinRepe
 puede definirse recursivamente.
 -}
 
-mixturadora::Helado->Helado->Helado
+mixturadora::Helado->Maquina
 mixturadora helado1 helado2 = Helado{
     gusto = concatenarY (gusto helado1) (gusto helado2),
     temperatura = obtenerMenorTemperatura (temperatura helado1) (temperatura helado2),
@@ -143,8 +144,10 @@ juntarListas lista1 lista2 = Data.List.sort (lista1 ++ lista2)
 
 dispenser =  Dispenser "Agua" (-4)
 cajonBanana= Cajon "cajonBanana" "banana"
+dispenser2 =  Dispenser "Agua" (-5)
+cajonFrutilla= Cajon "cajonFrutilla" "frutilla"
 
-batidoraComun::Cajon->Dispenser->Helado->Helado
+batidoraComun::Cajon->Dispenser->Maquina
 batidoraComun cajon dispenser helado = helado {gusto= sabor cajon, temperatura = temperatura1 dispenser,ingredientes= agregarIngredientes (nombreDispenser dispenser) (sabor cajon) }
 
 agregarIngredientes::Fruta->Fruta->[Fruta]
@@ -152,18 +155,25 @@ agregarIngredientes::Fruta->Fruta->[Fruta]
 agregarIngredientes ingrediente1 ingrediente2 = Data.List.sort ([ingrediente1] ++ [ingrediente2])
 
 
-{- 
-  choripasteadora: integrante 2
-Es una máquina especial que le agrega " de la casa" al gusto del helado y también le incorpora
- los ingredientes “agua” y “esencia artificial”, siempre y cuando no lo tengan. 
- 
- -}
- 
-choripasteadora::Helado->Helado
+choripasteadora::Maquina
 choripasteadora helado = helado {gusto = gusto helado ++ " de la casa", ingredientes= sinRepetidos (ingredientes helado ++ agregarIngredientes ("agua") ("esencia artificial"))}
 
 
+{-
+  2.2.7 g. Helado neutro: integrante 1
+Definir un helado neutro, que no tiene gusto ni ingredientes, y está a 0 grados
+ (es la base para las preparaciones)
 
-
+Mediante el uso de composición, mostrar cómo podría tener un helado neutro, 
+batirlo con frutilla y un dispenser de -5 grados, pasarlo por una heladera
+ que le baje 5 grados, y agregarle azúcar. Explique dónde aparece el concepto
+  de aplicación parcial.
+-}
+ 
+neutro = Helado "" 0 [] 
+ 
+--batidoraComun cajonFrutilla dispenser2 neutro
+--heladeraComun 5 (batidoraComun cajonFrutilla dispenser2 neutro)
+--agregadora "azucar" (heladeraComun 5 (batidoraComun cajonFrutilla dispenser2 neutro))
 
 
