@@ -3,12 +3,23 @@ import PdePreludat
 import Data.List (isPrefixOf,sort)
 
 type Ingrediente = String
+type Fruta = String
 
 data Helado = Helado {
    gusto :: String,
    temperatura :: Int,
    ingredientes :: [Ingrediente]
 } deriving (Show)
+
+data Cajon= Cajon{
+nombre:: String,
+sabor::Fruta
+}deriving (Show) 
+
+data Dispenser= Dispenser{
+nombreDispenser:: String,
+temperatura1::Int 
+}deriving (Show) 
 
 -------------------------------HELADOS------------------------
 frutilla = Helado "frutilla al agua" (-6) ["frutilla","agua"]
@@ -95,8 +106,8 @@ Resolver la función que elimina repetidos en forma recursiva y llamarla sinRepe
 puede definirse recursivamente.
 -}
 
-ixturadora::Helado->Helado->Helado
-ixturadora helado1 helado2 = Helado{
+mixturadora::Helado->Helado->Helado
+mixturadora helado1 helado2 = Helado{
     gusto = concatenarY (gusto helado1) (gusto helado2),
     temperatura = obtenerMenorTemperatura (temperatura helado1) (temperatura helado2),
     ingredientes = sinRepetidos(juntarListas (ingredientes helado1) (ingredientes helado2))
@@ -124,44 +135,20 @@ sinRepetidos (x:xs)
 juntarListas::[Ingrediente]->[Ingrediente]->[Ingrediente]
 juntarListas lista1 lista2 = Data.List.sort (lista1 ++ lista2)
   
-  
-----------------------------------------
-O 2.2.4.d------------------------------------------------
- 
 -- 2.2.4 d. batidora: común
--- Toma un cajón de una fruta, un dispenser de agua a una cierta temperatura, y un helado, transformándolo en  
--- un helado del sabor de la fruta del cajón, la temperatura del agua y los ingredientes agua y la fruta. Modelar
--- el dispenser y el cajón como ud. lo crea conveniente
-
-type Fruta = String
-
-data Cajon= Cajon{
-nombre:: String,
-sabor::Fruta
-}deriving (Show) 
-
-
-data Dispenser= Dispenser{
-nombreDispenser:: String,
-temperatura1::Int 
-}deriving (Show) 
-
-
+-- Toma un cajón de una fruta, un dispenser de agua a una cierta temperatura, y un helado,
+-- transformándolo en un helado del sabor de la fruta del cajón, la temperatura del agua 
+--y los ingredientes agua y la fruta. Modelar el dispenser y el cajón como ud.
+-- lo crea conveniente
 
 dispenser =  Dispenser "Agua" (-4)
 cajonBanana= Cajon "cajonBanana" "banana"
 
 batidoraComun::Cajon->Dispenser->Helado->Helado
-batidoraComun cajon dispenser helado = helado { gusto= sabor cajon, temperatura = temperatura1 dispenser,ingredientes= agregarIngredientes (nombreDispenser dispenser) (sabor cajon) }
+batidoraComun cajon dispenser helado = helado {gusto= sabor cajon, temperatura = temperatura1 dispenser,ingredientes= agregarIngredientes (nombreDispenser dispenser) (sabor cajon) }
 
 agregarIngredientes::Fruta->Fruta->[Fruta]
-agregarIngredientes ingrediente1 ingrediente2 =[ingrediente1] ++ [ingrediente2]
-
-
-
-
-
--------------------------------------------------------------------------------------------------------------------------------
-
+--agregarIngredientes ingrediente1 ingrediente2 = [ingrediente1] ++ [ingrediente2]
+agregarIngredientes ingrediente1 ingrediente2 = Data.List.sort ([ingrediente1] ++ [ingrediente2])
 
 
