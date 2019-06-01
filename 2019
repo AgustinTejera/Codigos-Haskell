@@ -1,0 +1,92 @@
+import Data.List (isPrefixOf)
+import Text.Show.Functions
+type Ingrediente = String
+
+
+data Helado = Helado{
+gusto :: String,
+temperatura :: Int,
+ingredientes :: [Ingrediente]
+} deriving (Show)
+
+helado1 = Helado "chocolate suizo" (-2) ["chocolate","leche","azucar","agua"]
+helado2 = Helado "crema" (-22) ["chocolate", "leche", "nesquik"]
+
+helados = [
+   Helado "pistacho" 2 ["pistacho", "leche", "agua"],
+   Helado "frutilla" (-2) ["frutilla", "leche"],
+   Helado "dulce de leche" (-1) ["dulce de leche", "agua"],
+   Helado "agua" 0 ["agua"]
+ ]
+ 
+gustoChocolate = "chocolate"
+gustoAgua = "agua"   
+{-2.1 Punto 1 (común): Helados bien y mal preparados
+Determinar si un helado está bien o mal preparado, lo que ocurre según estos parámetros
+
+la temperatura deberá estar al menos a -10 grados para cualquier helado que comience con chocolate (por ejemplo, para 
+"chocolate intenso" o "chocolate nevado" sí, pero no para "vainilla al chocolate"). 
+Tip: podés averiguar qué hace
+ Data.List.isPrefixOf y cómo la podés utilizar.
+ 
+
+si el helado tiene agua en sus ingredientes, debe estar al menos a -5 grados
+para el resto debe estar al menos a -x grados, donde x es la cantidad de ingredientes
+-}
+estaBienPreparado helado 
+ |empiezaCon (gusto helado) && temperaturaCorrecta (temperatura helado) (-10)=True
+ |contieneAgua helado = True
+ |temperaturaCorrecta (temperatura helado) (cantidadIngredientes helado) = True
+ |otherwise = False
+
+
+empiezaCon gusto = Data.List.isPrefixOf (take 9 gusto) gustoChocolate   
+
+temperaturaCorrecta temperatura cantidad = temperatura <= cantidad
+
+contieneAgua helado = contieneIngrediente gustoAgua (ingredientes helado) && temperaturaCorrecta (temperatura helado) (-5)   
+
+contieneIngrediente ingrediente ingredientes = elem ingrediente ingredientes  
+
+cantidadIngredientes::Helado->Int 
+cantidadIngredientes = length.ingredientes 
+
+
+{-
+
+
+2.2 Punto 2
+Para poder producir el helado se necesita materia prima y máquinas que lo procesen.
+ Modelar las siguientes máquinas y dar el tipo de cada una de ellas:
+2.2.1 a. heladera (común)
+Enfría una cierta cantidad de grados a un helado.
+
+
+
+2.2.2 b. agregadora: común
+Permite agregar un ingrediente a un helado al final de la lista.
+
+
+
+-}
+
+--Maquinas---
+
+heladeraComun::Int->Helado->Helado
+heladeraComun grados helado = helado{temperatura= temperatura helado - grados} 
+
+
+agregadora::Helado->Ingrediente->Helado
+agregadora helado ingrediente=  helado {ingredientes= ingredientes helado ++ [ingrediente] }
+
+
+agregadora1::Helado->Ingrediente->Helado
+agregadora1 helado ingrediente=  helado {ingredientes=foldr (:) [ingrediente] (ingredientes helado) }
+
+
+--type Caracter = Char    'a'
+--type Palabra = [Caracter]  "belen"
+--foldr (:) ["comer"] ["agus","belen","dami"]
+
+
+
