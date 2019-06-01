@@ -1,16 +1,20 @@
-import Data.List (isPrefixOf)
-import Text.Show.Functions
+module Library where
+import PdePreludat
+import Data.List (isPrefixOf,sort)
+
 type Ingrediente = String
 
-
-data Helado = Helado{
-gusto :: String,
-temperatura :: Int,
-ingredientes :: [Ingrediente]
+data Helado = Helado {
+   gusto :: String,
+   temperatura :: Int,
+   ingredientes :: [Ingrediente]
 } deriving (Show)
 
-helado1 = Helado "chocolate suizo" (-2) ["chocolate","leche","azucar","agua"]
+-------------------------------HELADOS------------------------
+frutilla = Helado "frutilla al agua" (-6) ["frutilla","agua"]
+helado1 = Helado "chocolate suizo" (-7) ["chocolate","leche","azucar","agua"]
 helado2 = Helado "crema" (-22) ["chocolate", "leche", "nesquik"]
+durazno = Helado "durazno" (-2) ["durazno","agua","azucar"]
 
 helados = [
    Helado "pistacho" 2 ["pistacho", "leche", "agua"],
@@ -18,137 +22,106 @@ helados = [
    Helado "dulce de leche" (-1) ["dulce de leche", "agua"],
    Helado "agua" 0 ["agua"]
  ]
- 
-gustoChocolate = "chocolate"
-gustoAgua = "agua"   
-{-2.1 Punto 1 (común): Helados bien y mal preparados
-Determinar si un helado está bien o mal preparado, lo que ocurre según estos parámetros
 
-la temperatura deberá estar al menos a -10 grados para cualquier helado que comience con chocolate (por ejemplo, para 
-"chocolate intenso" o "chocolate nevado" sí, pero no para "vainilla al chocolate"). 
-Tip: podés averiguar qué hace
- Data.List.isPrefixOf y cómo la podés utilizar.
- 
+{-Punto 1
+ Determinar si un helado está bien o mal preparado, lo que ocurre según estos parámetros
+la temperatura deberá estar al menos a -10 grados para cualquier helado que comience 
+con chocolate (por ejemplo, para "chocolate intenso" o "chocolate nevado" sí, pero no
+ para "vainilla al chocolate"). Tip: podés averiguar qué hace Data.List.isPrefixOf 
+ y cómo la podés utilizar.
 
-si el helado tiene agua en sus ingredientes, debe estar al menos a -5 grados
-para el resto debe estar al menos a -x grados, donde x es la cantidad de ingredientes
+ si el helado tiene agua en sus ingredientes, debe estar al menos a -5 grados
+
+ para el resto debe estar al menos a -x grados, donde x es la cantidad de ingredientes
 -}
-estaBienPreparado helado 
- |empiezaCon (gusto helado) && temperaturaCorrecta (temperatura helado) (-10)=True
+
+gustoChocolate = "chocolate"
+
+estaBienPreparado::Helado->Bool
+estaBienPreparado helado
+ |empiezaConChocolate (gusto helado) && temperaturaCorrecta (temperatura helado) (-10) = True
  |contieneAgua helado = True
  |temperaturaCorrecta (temperatura helado) (cantidadIngredientes helado) = True
  |otherwise = False
 
+empiezaConChocolate::String->Bool
+empiezaConChocolate gusto = Data.List.isPrefixOf gustoChocolate gusto
+--Data.List.isPrefixOf se fija si la primer lista comienza igual que la 2da
+--  "chocolate" y mi gusto de helado "chocolate suizo" devuelve True
 
-empiezaCon gusto = Data.List.isPrefixOf gustoChocolate gusto  
+temperaturaCorrecta::Int->Int->Bool
+temperaturaCorrecta temperatura grados = temperatura <= grados 
 
-temperaturaCorrecta temperatura cantidad = temperatura <= cantidad
+contieneAgua::Helado->Bool
+contieneAgua helado= elem "agua" (ingredientes helado) && temperaturaCorrecta (temperatura helado) (-5)
 
-contieneAgua helado = contieneIngrediente gustoAgua (ingredientes helado) && temperaturaCorrecta (temperatura helado) (-5)   
+--contieneIngrediente ingrediente ingredientes = elem ingrediente ingredientes
 
-contieneIngrediente ingrediente ingredientes = elem ingrediente ingredientes  
+cantidadIngredientes::Helado->Int
+cantidadIngredientes = length.ingredientes
 
-cantidadIngredientes::Helado->Int 
-cantidadIngredientes = length.ingredientes 
-
-
-{-
-
-
-2.2 Punto 2
+{-2.2 Punto 2
 Para poder producir el helado se necesita materia prima y máquinas que lo procesen.
  Modelar las siguientes máquinas y dar el tipo de cada una de ellas:
 2.2.1 a. heladera (común)
 Enfría una cierta cantidad de grados a un helado.
 
-
-
 2.2.2 b. agregadora: común
 Permite agregar un ingrediente a un helado al final de la lista.
-
-
-
 -}
 
---Maquinas---
+------------------------------MAQUINAS------------------
 
 heladeraComun::Int->Helado->Helado
 heladeraComun grados helado = helado{temperatura= temperatura helado - grados} 
 
-
 agregadora::Helado->Ingrediente->Helado
-agregadora helado ingrediente=  helado {ingredientes= ingredientes helado ++ [ingrediente] }
-
+agregadora helado ingrediente = helado {ingredientes= ingredientes helado ++ [ingrediente] }
 
 agregadora1::Helado->Ingrediente->Helado
-agregadora1 helado ingrediente=  helado {ingredientes=foldr (:) [ingrediente] (ingredientes helado) }
-
+agregadora1 helado ingrediente = helado {ingredientes=foldr (:) [ingrediente] (ingredientes helado) }
 
 --type Caracter = Char    'a'
 --type Palabra = [Caracter]  "belen"
 --foldr (:) ["comer"] ["agus","belen","dami"]
 
-
-
-{-
-
-2.2.3 c. mixturadora: integrante 1
-Toma dos helados de frutas diferentes y obtiene uno nuevo, de gusto combinado concatenando " y " entre los gustos, 
+{-2.2.3 c. mixturadora: integrante 1
+Toma dos helados de frutas diferentes y obtiene uno nuevo, de gusto combinado concatenando
+ " y " entre los gustos, 
 con la menor temperatura y todos los ingredientes (sin repetidos).
 
-Resolver la función que elimina repetidos en forma recursiva y llamarla sinRepetidos. Ésta es la única función que 
+Resolver la función que elimina repetidos en forma recursiva y llamarla sinRepetidos.
+ Ésta es la única función que 
 puede definirse recursivamente.
 -}
 
+ixturadora::Helado->Helado->Helado
+ixturadora helado1 helado2 = Helado{
+    gusto = concatenarY (gusto helado1) (gusto helado2),
+    temperatura = obtenerMenorTemperatura (temperatura helado1) (temperatura helado2),
+    ingredientes = sinRepetidos(juntarListas (ingredientes helado1) (ingredientes helado2))
+}  
 
+concatenarY::String->String->String
+concatenarY gusto1 gusto2 = gusto1 ++ " y " ++ gusto2
+
+obtenerMenorTemperatura::Int->Int->Int
+obtenerMenorTemperatura temperatura1 temperatura2
+ |temperatura1 > temperatura2 = temperatura2
+ |otherwise = temperatura1
 
 limon = Helado "limon" (-2) ["agua","limon","azucar"]
 naranja = Helado "naranja" (-22) ["naranja", "jugo", "mango", "agua", "azucar"]
 
---mixturadora helado1 helado2 = 
-
-
-
 --limon y naranja  = Helado "limon y naranja" (-22) ["agua","limon","azucar","naranja", "jugo", "mango"]
 
-{-sinRepetidos [] _= []
-sinRepetidos (x:xs) lista2
- | not (elem x lista2) = x : sinRepetidos xs lista2
- |otherwise = sinRepetidos xs lista2
--}
-
+sinRepetidos::[Ingrediente]->[Ingrediente]
 sinRepetidos [] = []
 sinRepetidos (x:xs)
- | x /= head xs  = x : sinRepetidos xs
+ |not(elem x xs) = x : sinRepetidos xs
  |otherwise = sinRepetidos xs 
- 
- 
+
+juntarListas::[Ingrediente]->[Ingrediente]->[Ingrediente]
 juntarListas lista1 lista2 = Data.List.sort (lista1 ++ lista2)
-
-
-
---["agua","agua","azucar","azucar","jugo","limon","mango","naranja"]
-
---"naranja" /= "[]"    ["agua","azucar","jugo","limon","mango","naranja" 
-
-
-{-estaBienPreparado::Helado->Bool
-estaBienPreparado helado
-  |take 9 (gusto helado) == "chocolate" && (temperatura helado <= (-10)) = True
-  |take 4 (gusto helado) == "agua" && temperatura helado <= (-5) 
-  |otherwise = False --temperatura helado <= cantidadIngredientes helado
-
-empiezaCon::String->Bool 
-empiezaCon "chocolate" = take 9 (gusto helado) == "chocolate" && (temperatura helado <= (-10))    
-empiezaCon "agua" = take 4 (gusto helado) == "agua" && temperatura helado <= (-5)
-empiezaCon _ = temperatura helado <= cantidadIngredientes helado
- 
- 
-cantidadIngredientes::Helado->Int 
-cantidadIngredientes = length.ingredientes 
-
-cool helado= Data.List.isPrefixOf gustoChocolate (take 9 (gusto helado)) 
- --- |Data.List.isPrefixOf gustoAgua (take 9 (gusto helado))
--}
-
-
+  
+----------------------------------------
