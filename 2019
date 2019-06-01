@@ -124,4 +124,44 @@ sinRepetidos (x:xs)
 juntarListas::[Ingrediente]->[Ingrediente]->[Ingrediente]
 juntarListas lista1 lista2 = Data.List.sort (lista1 ++ lista2)
   
+  
 ----------------------------------------
+O 2.2.4.d------------------------------------------------
+ 
+-- 2.2.4 d. batidora: común
+-- Toma un cajón de una fruta, un dispenser de agua a una cierta temperatura, y un helado, transformándolo en  
+-- un helado del sabor de la fruta del cajón, la temperatura del agua y los ingredientes agua y la fruta. Modelar
+-- el dispenser y el cajón como ud. lo crea conveniente
+
+type Fruta = String
+
+data Cajon= Cajon{
+nombre:: String,
+sabor::Fruta
+}deriving (Show) 
+
+
+data Dispenser= Dispenser{
+nombreDispenser:: String,
+temperatura1::Int 
+}deriving (Show) 
+
+
+
+dispenser =  Dispenser "Agua" (-4)
+cajonBanana= Cajon "cajonBanana" "banana"
+
+batidoraComun::Cajon->Dispenser->Helado->Helado
+batidoraComun cajon dispenser helado = helado { gusto= sabor cajon, temperatura = temperatura1 dispenser,ingredientes= agregarIngredientes (nombreDispenser dispenser) (sabor cajon) }
+
+agregarIngredientes::Fruta->Fruta->[Fruta]
+agregarIngredientes ingrediente1 ingrediente2 =[ingrediente1] ++ [ingrediente2]
+
+
+
+
+
+-------------------------------------------------------------------------------------------------------------------------------
+
+
+
